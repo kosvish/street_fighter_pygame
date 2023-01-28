@@ -32,6 +32,10 @@ while run:
     # прорисовка фона
     draw_bg()
 
+    # движение бойцов
+    fighter_1.move()
+    fighter_2.move()
+
     # прорисовка бойцов
     fighter_1.draw(screen)
     fighter_2.draw(screen)
