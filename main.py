@@ -10,6 +10,10 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Sasi")
 
+# Установка кадров
+clock = pygame.time.Clock()
+FPS = 60
+
 # загрузка заднего фона
 bg_image = pygame.image.load("assets/images/background/background.png").convert_alpha()
 
@@ -28,6 +32,8 @@ fighter_2 = Fighter(700, 310)
 # game loop
 run = True
 while run:
+
+    clock.tick(FPS)
 
     # прорисовка фона
     draw_bg()
