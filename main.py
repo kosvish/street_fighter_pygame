@@ -32,6 +32,10 @@ while run:
     # прорисовка фона
     draw_bg()
 
+    # прорисовка бойцов
+    fighter_1.draw(screen)
+    fighter_2.draw(screen)
+
     # event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
