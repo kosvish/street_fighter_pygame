@@ -14,6 +14,11 @@ pygame.display.set_caption("Sasi")
 clock = pygame.time.Clock()
 FPS = 60
 
+# обозначение цветов
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
+WHITE = (255, 255, 255)
+
 # загрузка заднего фона
 bg_image = pygame.image.load("assets/images/background/background.png").convert_alpha()
 
@@ -22,6 +27,12 @@ bg_image = pygame.image.load("assets/images/background/background.png").convert_
 def draw_bg():
     scale_bg = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
     screen.blit(scale_bg, (0, 0))
+
+
+# функция для отрисовки здоровья бойцов
+
+def draw_health_bar(health, x, y):
+    pygame.draw.rect(screen, YELLOW, (x, y, 400, 30))
 
 
 # Создание двух экземпляров класса Fighter
@@ -38,9 +49,12 @@ while run:
     # прорисовка фона
     draw_bg()
 
+    # отрисовка здоровья
+    draw_health_bar(fighter_1.health, 20, 20)
+    draw_health_bar(fighter_2.health, 580, 20)
+
     # движение бойцов
-    fighter_1.move()
-    fighter_2.move()
+    fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2)
 
     # прорисовка бойцов
     fighter_1.draw(screen)
