@@ -6,8 +6,9 @@ class Fighter():
         self.rect = pygame.Rect((x, y, 80, 180))
         self.vel_y = 0
 
-    def move(self, screen_width):
+    def move(self, screen_width, screen_height):
         SPEED = 10
+        GRAVITY = 2
         dx = 0
         dy = 0
 
@@ -24,6 +25,8 @@ class Fighter():
         if key[pygame.K_w]:
             self.vel_y = -30
 
+        # добавление гравитации
+        self.vel_y += GRAVITY
         dy += self.vel_y
 
         # проверка на то что пользователь находится на экране
@@ -31,6 +34,9 @@ class Fighter():
             dx = -self.rect.left
         if self.rect.right + dx > screen_width:
             dx = screen_width - self.rect.right
+        if self.rect.bottom + dy > screen_height - 110:
+            self.vel_y = 0
+            dy = screen_height - 110 - self.rect.bottom
 
         # обновление положения бойца на экране
         self.rect.x += dx
