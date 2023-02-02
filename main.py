@@ -32,7 +32,10 @@ def draw_bg():
 # функция для отрисовки здоровья бойцов
 
 def draw_health_bar(health, x, y):
-    pygame.draw.rect(screen, YELLOW, (x, y, 400, 30))
+    ratio = health / 100
+    pygame.draw.rect(screen, WHITE, (x - 2, y - 2, 404, 34))
+    pygame.draw.rect(screen, RED, (x, y, 400, 30))
+    pygame.draw.rect(screen, YELLOW, (x, y, 400 * ratio, 30))
 
 
 # Создание двух экземпляров класса Fighter
