@@ -22,6 +22,9 @@ WHITE = (255, 255, 255)
 # загрузка заднего фона
 bg_image = pygame.image.load("assets/images/background/background.png").convert_alpha()
 
+# загрузка анимации
+warrior_sheet = pygame.image.load("assets/images/warrior/warrior.png").convert_alpha()
+wizard_sheet = pygame.image.load("assets/images/wizzard/wizzard.png").convert_alpha()
 
 # функция для прорисовки заднего фона
 def draw_bg():
