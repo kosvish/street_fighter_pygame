@@ -19,12 +19,27 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 WHITE = (255, 255, 255)
 
+# определяем переменные бойцов
+WARRIOR_SIZE = 162
+WARRIOR_SCALE = 4
+WARRIOR_DATA = [WARRIOR_SIZE, WARRIOR_SCALE]
+
+
+WIZARD_SIZE = 250
+WIZARD_SCALE = 3
+WIZARD_DATA = [WIZARD_SIZE, WIZARD_SCALE]
+
 # загрузка заднего фона
 bg_image = pygame.image.load("assets/images/background/background.png").convert_alpha()
 
 # загрузка анимации
 warrior_sheet = pygame.image.load("assets/images/warrior/warrior.png").convert_alpha()
-wizard_sheet = pygame.image.load("assets/images/wizzard/wizzard.png").convert_alpha()
+wizard_sheet = pygame.image.load("assets/images/wizzard/wizard.png").convert_alpha()
+
+# обозначаем номер анимации
+WARRIOR_ANIMATION_STEPS = [10, 8, 1, 7, 7, 1, 5]
+WIZARD_ANIMATION_STEPS = [8, 8, 1, 8, 8, 3, 7]
+
 
 # функция для прорисовки заднего фона
 def draw_bg():
@@ -43,8 +58,8 @@ def draw_health_bar(health, x, y):
 
 # Создание двух экземпляров класса Fighter
 
-fighter_1 = Fighter(200, 310)
-fighter_2 = Fighter(700, 310)
+fighter_1 = Fighter(200, 310, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS)
+fighter_2 = Fighter(700, 310, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS)
 
 # game loop
 run = True
