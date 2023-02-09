@@ -14,6 +14,7 @@ class Fighter():
         self.update_time = pygame.time.get_ticks()
         self.rect = pygame.Rect((x, y, 80, 180))
         self.vel_y = 0
+        self.running = False
         self.jump = False
         self.attacking = False
         self.attack_type = 0
@@ -37,16 +38,19 @@ class Fighter():
         GRAVITY = 2
         dx = 0
         dy = 0
+        self.running = False
 
         # получаем нажатие клавиш
         key = pygame.key.get_pressed()
         # может выполнять другие действия, только если в данный момент не атакует
-        if self.attacking == False:
+        if not self.attacking:
             # движение
             if key[pygame.K_a]:
                 dx = -SPEED
+                self.running = True
             if key[pygame.K_d]:
                 dx = SPEED
+                self.running = True
 
             # прыжок
             if key[pygame.K_w] and self.jump == False:
@@ -88,12 +92,22 @@ class Fighter():
 
     # обновление анимации
     def update(self):
-        animation_cooldown = 500
+
+        # проверка какое действие выполняет игрок
+        if self.running:
+            self.action = 1
+        else:
+            self.action = 0
+
+        animation_cooldown = 50
         self.image = self.animation_list[self.action][self.frame_index]
         # проверка прошло ли время с момента последнего обновления кадра
         if pygame.time.get_ticks() - self.update_time > animation_cooldown:
             self.frame_index += 1
             self.update_time = pygame.time.get_ticks()
+        # проверка на то что анимация закончилась
+        if self.frame_index >= len(self.animation_list[self.action]):
+            self.frame_index = 0
 
     def attack(self, surface, target):
         self.attacking = True
@@ -104,6 +118,11 @@ class Fighter():
             target.health -= 10
 
         pygame.draw.rect(surface, (0, 255, 0), attacking_rect)
+
+    def update_action(self, new_action):
+        # проверка если новое действие отличается от предыдущего
+        if new_action != self.action:
+            self.action = new_action
 
     def draw(self, surface):
         img = pygame.transform.flip(self.image, self.flip, False)
