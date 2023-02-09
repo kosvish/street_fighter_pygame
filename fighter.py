@@ -39,6 +39,7 @@ class Fighter():
         dx = 0
         dy = 0
         self.running = False
+        self.attack_type = 0
 
         # получаем нажатие клавиш
         key = pygame.key.get_pressed()
@@ -92,12 +93,19 @@ class Fighter():
 
     # обновление анимации
     def update(self):
-
         # проверка какое действие выполняет игрок
-        if self.running:
-            self.action = 1
+        if self.attacking is True:
+            if self.attack_type == 1:
+                self.update_action(3)
+            elif self.attack_type == 2:
+                self.update_action(4)
+
+        elif self.jump is True:
+            self.update_action(2)  # 2: Прыжок
+        elif self.running:
+            self.update_action(1)  # 1: Бежит
         else:
-            self.action = 0
+            self.update_action(0)  # 0: Стоит
 
         animation_cooldown = 50
         self.image = self.animation_list[self.action][self.frame_index]
@@ -108,6 +116,9 @@ class Fighter():
         # проверка на то что анимация закончилась
         if self.frame_index >= len(self.animation_list[self.action]):
             self.frame_index = 0
+            # проверка на то что атака закончилась
+            if self.action == 3 or self.action == 4:
+                self.attacking = False
 
     def attack(self, surface, target):
         self.attacking = True
@@ -123,6 +134,9 @@ class Fighter():
         # проверка если новое действие отличается от предыдущего
         if new_action != self.action:
             self.action = new_action
+            # обновление настроек анимации
+            self.frame_index = 0
+            self.update_time = pygame.time.get_ticks()
 
     def draw(self, surface):
         img = pygame.transform.flip(self.image, self.flip, False)
