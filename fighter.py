@@ -2,7 +2,8 @@ import pygame
 
 
 class Fighter():
-    def __init__(self, x, y, flip, data, sprite_sheet, animation_steps):
+    def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps):
+        self.player = player
         self.size = data[0]
         self.image_scale = data[1]
         self.offset = data[2]
@@ -21,6 +22,7 @@ class Fighter():
         self.attack_cooldown = 0
         self.hit = False
         self.health = 100
+        self.alive = True
 
     def load_images(self, sprite_sheet, animation_steps):
         # достаём изображение из листа анимации
@@ -47,26 +49,72 @@ class Fighter():
         key = pygame.key.get_pressed()
         # может выполнять другие действия, только если в данный момент не атакует
         if not self.attacking:
-            # движение
-            if key[pygame.K_a]:
-                dx = -SPEED
-                self.running = True
-            if key[pygame.K_d]:
-                dx = SPEED
-                self.running = True
+            # проверка на игрока 1
+            if self.player == 1:
+                # движение
+                if key[pygame.K_a]:
+                    dx = -SPEED
+                    self.running = True
+                if key[pygame.K_d]:
+                    dx = SPEED
+                    self.running = True
 
-            # прыжок
-            if key[pygame.K_w] and self.jump == False:
-                self.vel_y = -30
-                self.jump = True
-            # атаки
-            if key[pygame.K_r] or key[pygame.K_t]:
-                self.attack(surface, target)
-                # определяем какая атака была использована
-                if key[pygame.K_r]:
-                    self.attack_type = 1
-                if key[pygame.K_t]:
-                    self.attack_type = 2
+                # прыжок
+                if key[pygame.K_w] and self.jump == False:
+                    self.vel_y = -30
+                    self.jump = True
+                # атаки
+                if key[pygame.K_r] or key[pygame.K_t]:
+                    self.attack(surface, target)
+                    # определяем какая атака была использована
+                    if key[pygame.K_r]:
+                        self.attack_type = 1
+                    if key[pygame.K_t]:
+                        self.attack_type = 2
+                        # проверка на игрока 1
+                        if self.player == 1:
+                            # движение
+                            if key[pygame.K_a]:
+                                dx = -SPEED
+                                self.running = True
+                            if key[pygame.K_d]:
+                                dx = SPEED
+                                self.running = True
+
+                            # прыжок
+                            if key[pygame.K_w] and self.jump == False:
+                                self.vel_y = -30
+                                self.jump = True
+                            # атаки
+                            if key[pygame.K_r] or key[pygame.K_t]:
+                                self.attack(surface, target)
+                                # определяем какая атака была использована
+                                if key[pygame.K_r]:
+                                    self.attack_type = 1
+                                if key[pygame.K_t]:
+                                    self.attack_type = 2
+            # проверка на игрока 2
+            if self.player == 2:
+                # движение
+                if key[pygame.K_LEFT]:
+                    dx = -SPEED
+                    self.running = True
+                if key[pygame.K_RIGHT]:
+                    dx = SPEED
+                    self.running = True
+
+                # прыжок
+                if key[pygame.K_UP] and self.jump is False:
+                    self.vel_y = -30
+                    self.jump = True
+                # атаки
+                if key[pygame.K_KP1] or key[pygame.K_KP2]:
+                    self.attack(surface, target)
+                    # определяем какая атака была использована
+                    if key[pygame.K_r]:
+                        self.attack_type = 1
+                    if key[pygame.K_t]:
+                        self.attack_type = 2
 
         # добавление гравитации
         self.vel_y += GRAVITY
@@ -99,7 +147,11 @@ class Fighter():
 
     # обновление анимации
     def update(self):
-        if self.hit is True:
+        if self.health <= 0:
+            self.health = 0
+            self.alive = False
+            self.update_action(6)
+        elif self.hit is True:
             self.update_action(5)  # 5: Hit
         # проверка какое действие выполняет игрок
         elif self.attacking is True:
@@ -123,21 +175,26 @@ class Fighter():
             self.update_time = pygame.time.get_ticks()
         # проверка на то что анимация закончилась
         if self.frame_index >= len(self.animation_list[self.action]):
-            self.frame_index = 0
-            # проверка на то что атака закончилась
-            if self.action == 3 or self.action == 4:
-                self.attacking = False
-                self.attack_cooldown = 20
-            if self.action == 5:
-                self.hit = False
-                self.attacking = False
-                self.attack_cooldown = 20
+            # если боец умер , окончание анимации
+            if not self.alive:
+                self.frame_index = len(self.animation_list[self.action]) - 1
+            else:
+                self.frame_index = 0
+                # проверка на то что атака закончилась
+                if self.action == 3 or self.action == 4:
+                    self.attacking = False
+                    self.attack_cooldown = 20
+                if self.action == 5:
+                    self.hit = False
+                    self.attacking = False
+                    self.attack_cooldown = 20
 
     def attack(self, surface, target):
         if self.attack_cooldown == 0:
             self.attacking = True
             attacking_rect = pygame.Rect(
-                self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height
+                self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width,
+                self.rect.height
             )
             if attacking_rect.colliderect(target.rect):
                 target.health -= 10
